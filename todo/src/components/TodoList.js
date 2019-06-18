@@ -1,7 +1,7 @@
 import React from 'react';
 import Todo from './Todo';
 import { connect } from 'react-redux';
-import { add } from '../actions';
+import { add, toggle, delete_todo } from '../actions';
 
 class TodoList extends React.Component{
     state = {
@@ -10,7 +10,20 @@ class TodoList extends React.Component{
 
     handleChanges = e => {
         this.setState({ [e.target.name]: e.target.value });
-      };
+    };
+
+    addTodo = e => {
+        this.props.add(this.state.inputText);
+        this.setState({ inputText: '' });
+    }
+    toggleTodo = (e, id) => {
+        e.preventDefault();
+        this.props.toggle(id)
+    }
+    deleteTodo = (e, id) => {
+        e.preventDefault();
+        this.props.delete_todo(id);
+    }
 
     render(){
         return(
@@ -19,6 +32,8 @@ class TodoList extends React.Component{
                <Todo
                 key = {item.id}
                 item={item} 
+                toggleTodo={this.toggleTodo}
+                deleteTodo={this.deleteTodo}
                 />
               ))}
               <form>
@@ -29,7 +44,7 @@ class TodoList extends React.Component{
                  onChange = {this.handleChanges}
                  />
               </form>
-              <button>Add ToDo</button>
+              <button onClick = {this.addTodo}>Add ToDo</button>
             </div>
         );
     }
@@ -43,7 +58,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { add })(TodoList);
+export default connect(mapStateToProps, { add, toggle, delete_todo })(TodoList);
 
 
 //make it so that the add todo button actually adds a todo
